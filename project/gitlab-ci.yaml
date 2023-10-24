@@ -1,0 +1,19 @@
+stages:
+  - build
+  - test
+  - deploy
+
+build:
+  stage: build
+  script:
+    - docker build -t django-rest-api:$CI_COMMIT_SHORT_SHA .
+
+test:
+  stage: test
+  script:
+    - docker run django-rest-api:$CI_COMMIT_SHORT_SHA python manage.py test
+
+deploy:
+  stage: deploy
+  script:
+    - helm install --replace django-rest-api-release ./django-rest-api-chart/
